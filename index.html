@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тебе кое-что приготовили 💛</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Caveat:wght@600;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #fff1ec;
+    --card: #fffdfb;
+    --ink: #3a2630;
+    --ink-soft: #7a6168;
+    --primary: #ff4d6d;
+    --primary-dark: #d6294a;
+    --soft: #ffd3dc;
+    --gold: #ffb199;
+    --tape: #ffe7a3;
+    --radius: 22px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 12% 20%, rgba(255,77,109,0.08) 0, transparent 40%),
+      radial-gradient(circle at 88% 78%, rgba(255,178,153,0.12) 0, transparent 45%);
+    font-family: 'Manrope', sans-serif;
+    color: var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 16px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* scattered doodle hearts in the background */
+  .doodles{
+    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .doodles span{
+    position:absolute; font-size: 22px; opacity:.18; color: var(--primary);
+    transform: rotate(-12deg);
+  }
+
+  .stage{
+    position:relative;
+    width:100%;
+    max-width: 400px;
+    z-index: 1;
+  }
+
+  .card{
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 38px 28px 30px;
+    box-shadow: 0 18px 40px rgba(58,38,48,0.14), 0 2px 8px rgba(58,38,48,0.06);
+    position: relative;
+    transform: rotate(-0.6deg);
+    display:none;
+    text-align:center;
+    animation: rise .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .card.active{ display:block; }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(18px) rotate(-0.6deg); }
+    to{ opacity:1; transform: translateY(0) rotate(-0.6deg); }
+  }
+
+  /* washi tape on top of the card */
+  .tape{
+    position:absolute;
+    top:-14px; left:50%;
+    width: 92px; height: 28px;
+    background: var(--tape);
+    transform: translateX(-50%) rotate(-3deg);
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    opacity:.9;
+  }
+
+  .eyebrow{
+    font-family:'Caveat', cursive;
+    font-size: 22px;
+    color: var(--primary-dark);
+    margin: 4px 0 2px;
+  }
+
+  h1, .headline{
+    font-family:'Fraunces', serif;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.25;
+    margin: 6px 0 18px;
+  }
+
+  p.sub{
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: -8px 0 18px;
+  }
+
+  .emoji-hero{
+    font-size: 56px;
+    margin: 6px 0 14px;
+    display:block;
+  }
+
+  .btn-row{
+    display:flex;
+    gap: 12px;
+    justify-content:center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  button{
+    font-family:'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    border-radius: 999px;
+    padding: 13px 26px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+  }
+
+  .btn-primary{
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(255,77,109,0.35);
+  }
+  .btn-primary:hover{ background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-primary:disabled{
+    background: var(--soft);
+    color: #b98a93;
+    box-shadow:none;
+    cursor:not-allowed;
+  }
+
+  .btn-ghost{
+    background: var(--soft);
+    color: var(--primary-dark);
+    position: relative;
+  }
+
+  /* the runaway "no" button */
+  #noBtn{
+    position: relative;
+    transition: transform .18s ease;
+  }
+
+  .progress{
+    display:flex;
+    gap: 7px;
+    justify-content:center;
+    margin-top: 22px;
+  }
+  .progress i{
+    width:7px; height:7px; border-radius:50%;
+    background: var(--soft);
+    display:inline-block;
+  }
+  .progress i.done{ background: var(--primary); }
+
+  /* step: question illustration */
+  .cats{
+    font-size: 44px;
+    margin-bottom: 6px;
+  }
+
+  /* step: date/time */
+  .field{
+    text-align:left;
+    margin-bottom: 14px;
+  }
+  .field label{
+    display:block;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .field input{
+    width:100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1.5px solid var(--soft);
+    font-family:'Manrope', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background:#fff;
+  }
+  .field input:focus{
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  /* step: food grid */
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 16px 0 22px;
+  }
+  .opt{
+    border: 1.5px solid var(--soft);
+    border-radius: 16px;
+    padding: 14px 8px;
+    cursor: pointer;
+    background:#fff;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    user-select: none;
+  }
+  .opt .e{ font-size: 26px; display:block; margin-bottom: 4px; }
+  .opt span.label{ font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .opt.selected{
+    border-color: var(--primary);
+    background: var(--soft);
+  }
+  .opt.selected span.label{ color: var(--primary-dark); }
+  .opt:active{ transform: scale(0.97); }
+
+  /* final screen */
+  .final-msg{
+    font-family:'Fraunces', serif;
+    font-size: 19px;
+    line-height: 1.5;
+    margin: 10px 0 4px;
+  }
+  .final-detail{
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+  }
+  .final-detail b{ color: var(--ink); }
+
+  /* falling hearts on final screen */
+  .hearts-fall{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 2;
+  }
+  .hf{
+    position:absolute;
+    top: -40px;
+    font-size: 22px;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  @keyframes fall{
+    to{ transform: translateY(115vh) rotate(40deg); opacity: 0; }
+  }
+
+  footer{
+    text-align:center;
+    margin-top: 18px;
+    font-family:'Caveat', cursive;
+    font-size: 18px;
+    color: var(--ink-soft);
+    opacity:.8;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ animation:none; }
+    .hf{ animation: none; display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doodles" aria-hidden="true">
+  <span style="top:8%; left:6%;">♡</span>
+  <span style="top:18%; left:85%;">♡</span>
+  <span style="top:70%; left:10%;">♡</span>
+  <span style="top:80%; left:80%;">♡</span>
+  <span style="top:40%; left:92%;">♡</span>
+  <span style="top:55%; left:3%;">♡</span>
+</div>
+
+<div class="stage">
+
+  <!-- STEP 0: intro -->
+  <section class="card active" id="step-0">
+    <div class="tape"></div>
+    <span class="emoji-hero">💌</span>
+    <div class="eyebrow">для тебя</div>
+    <h1 class="headline">Тебе кое-что приготовили.<br>Откроешь?</h1>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goTo(1)">Открыть</button>
+    </div>
+  </section>
+
+  <!-- STEP 1: the question -->
+  <section class="card" id="step-1">
+    <div class="tape"></div>
+    <div class="cats">🐱 🌹 🐈</div>
+    <h1 class="headline">Ты пойдёшь со мной на свидание?</h1>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goTo(2)">Да</button>
+      <button class="btn-ghost" id="noBtn">Нет</button>
+    </div>
+    <div class="progress">
+      <i class="done"></i><i></i><i></i><i></i><i></i>
+    </div>
+  </section>
+
+  <!-- STEP 2: confirmation -->
+  <section class="card" id="step-2">
+    <div class="tape"></div>
+    <span class="emoji-hero">🥹💗</span>
+    <h1 class="headline">Подожди... ты точно сказала да?</h1>
+    <p class="sub">Это многое для меня значит.</p>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goTo(3)">Да, точно</button>
+    </div>
+    <div class="progress">
+      <i class="done"></i><i class="done"></i><i></i><i></i><i></i>
+    </div>
+  </section>
+
+  <!-- STEP 3: date & time -->
+  <section class="card" id="step-3">
+    <div class="tape"></div>
+    <span class="emoji-hero">📅</span>
+    <h1 class="headline">И так... когда ты свободна?</h1>
+    <div class="field">
+      <label for="dateInput">Дата</label>
+      <input type="date" id="dateInput">
+    </div>
+    <div class="field">
+      <label for="timeInput">Время</label>
+      <input type="time" id="timeInput">
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="dateNext" onclick="confirmDate()" disabled>Выбрать дату 💛</button>
+    </div>
+    <div class="progress">
+      <i class="done"></i><i class="done"></i><i class="done"></i><i></i><i></i>
+    </div>
+  </section>
+
+  <!-- STEP 4: food choice -->
+  <section class="card" id="step-4">
+    <div class="tape"></div>
+    <h1 class="headline">Что ты хочешь?</h1>
+    <p class="sub">Выбери, что тебе по кайфу</p>
+    <div class="grid" id="foodGrid">
+      <div class="opt" data-emoji="🍕" data-label="Пицца"><span class="e">🍕</span><span class="label">Пицца</span></div>
+      <div class="opt" data-emoji="🍣" data-label="Суши"><span class="e">🍣</span><span class="label">Суши</span></div>
+      <div class="opt" data-emoji="🍔" data-label="Бургер"><span class="e">🍔</span><span class="label">Бургер</span></div>
+      <div class="opt" data-emoji="🍝" data-label="Паста"><span class="e">🍝</span><span class="label">Паста</span></div>
+      <div class="opt" data-emoji="🍜" data-label="Рамен"><span class="e">🍜</span><span class="label">Рамен</span></div>
+      <div class="opt" data-emoji="🍰" data-label="Десерт"><span class="e">🍰</span><span class="label">Десерт</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="foodNext" onclick="goTo(5)" disabled>Готово</button>
+    </div>
+    <div class="progress">
+      <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i></i>
+    </div>
+  </section>
+
+  <!-- STEP 5: final -->
+  <section class="card" id="step-5">
+    <div class="tape"></div>
+    <span class="emoji-hero" id="finalEmoji">🍕</span>
+    <p class="final-msg" id="finalMessage">Напиши сюда свой текст 💛</p>
+    <p class="final-detail">Я заберу тебя <b id="finalDate">--</b> в <b id="finalTime">--</b></p>
+    <div class="progress">
+      <i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i>
+    </div>
+  </section>
+
+  <footer>сделано с любовью 🤍</footer>
+</div>
+
+<script>
+  /* ============================================================
+     ЛЕГКО РЕДАКТИРУЕТСЯ ЗДЕСЬ:
+     Текст на финальном экране. Можешь вписать что угодно —
+     поддерживается {date} и {time}, они подставятся автоматически.
+     ============================================================ */
+  const FINAL_MESSAGE = "Напиши сюда свой текст 💛";
+
+  let chosenFood = null;
+
+  function goTo(stepIndex){
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.getElementById('step-' + stepIndex).classList.add('active');
+    if(stepIndex === 5){ launchHearts(); fillFinal(); }
+  }
+
+  /* runaway "Нет" button */
+  const noBtn = document.getElementById('noBtn');
+  const phrases = ["Нет", "Уверена?", "Подумай ещё", "Серьёзно?", "Ну пожалуйста", "Да ладно", "Точно?", "Это не вариант 😄"];
+  let dodge = 0;
+
+  function dodgeNo(){
+    const stage = document.getElementById('step-1');
+    const rect = stage.getBoundingClientRect();
+    const btnW = noBtn.offsetWidth, btnH = noBtn.offsetHeight;
+    const maxX = Math.max(rect.width - btnW - 20, 40);
+    const maxY = Math.max(rect.height - btnH - 20, 40);
+    const x = Math.random() * maxX - maxX/2;
+    const y = Math.random() * maxY - maxY/2;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    dodge = Math.min(dodge + 1, phrases.length - 1);
+    noBtn.textContent = phrases[dodge];
+  }
+  noBtn.addEventListener('mouseenter', dodgeNo);
+  noBtn.addEventListener('click', (e) => { e.preventDefault(); dodgeNo(); });
+  noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodgeNo(); }, {passive:false});
+
+  /* date & time */
+  const dateInput = document.getElementById('dateInput');
+  const timeInput = document.getElementById('timeInput');
+  const dateNext = document.getElementById('dateNext');
+  let chosenDate = null, chosenTime = null;
+
+  function checkDateTime(){
+    dateNext.disabled = !(dateInput.value && timeInput.value);
+  }
+  dateInput.addEventListener('change', checkDateTime);
+  timeInput.addEventListener('change', checkDateTime);
+
+  function confirmDate(){
+    chosenDate = formatDate(dateInput.value);
+    chosenTime = timeInput.value;
+    goTo(4);
+  }
+
+  function formatDate(iso){
+    const [y,m,d] = iso.split('-');
+    return `${d}.${m}.${y}`;
+  }
+
+  /* food grid */
+  const foodNext = document.getElementById('foodNext');
+  document.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      chosenFood = { emoji: opt.dataset.emoji, label: opt.dataset.label };
+      foodNext.disabled = false;
+    });
+  });
+
+  /* final screen fill */
+  function fillFinal(){
+    document.getElementById('finalEmoji').textContent = chosenFood ? chosenFood.emoji : '💛';
+    document.getElementById('finalDate').textContent = chosenDate || '--';
+    document.getElementById('finalTime').textContent = chosenTime || '--';
+    document.getElementById('finalMessage').textContent = FINAL_MESSAGE
+      .replace('{date}', chosenDate || '')
+      .replace('{time}', chosenTime || '');
+  }
+
+  /* falling hearts */
+  function launchHearts(){
+    const layer = document.createElement('div');
+    layer.className = 'hearts-fall';
+    document.body.appendChild(layer);
+    const symbols = ['💗','💛','🤍','✨','💞'];
+    for(let i=0;i<28;i++){
+      const h = document.createElement('span');
+      h.className = 'hf';
+      h.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.animationDuration = (4 + Math.random()*3) + 's';
+      h.style.animationDelay = (Math.random()*2) + 's';
+      h.style.fontSize = (16 + Math.random()*14) + 'px';
+      layer.appendChild(h);
+    }
+    setTimeout(() => layer.remove(), 9000);
+  }
+</script>
+
+</body>
+</html>
